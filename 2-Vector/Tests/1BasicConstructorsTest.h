@@ -1,5 +1,4 @@
 #pragma once
-#include <cstddef>
 #include "../Vector.h"
 #include "Fixtures/CustomAsserts.h"
 
