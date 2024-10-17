@@ -13,7 +13,7 @@ class ForwardList {
     struct Node : NodeHeader {
         T data;
         template <typename... Args>
-        Node(NodeHeader* next, std::in_place_t, Args&&... args);
+        Node(NodeHeader* next, Args&&... args);
     };
 
     NodeHeader root = NodeHeader(nullptr);
@@ -102,9 +102,8 @@ ForwardList<T>::NodeHeader::NodeHeader(NodeHeader* next) : next(next) {}
 
 template <typename T>
 template <typename... Args>
-ForwardList<T>::Node::Node(NodeHeader* next, std::in_place_t, Args&&... args)
+ForwardList<T>::Node::Node(NodeHeader* next, Args&&... args)
     : NodeHeader(next), data(std::forward<Args>(args)...) {}
-
 
 template <typename T>
 ForwardList<T>::ForwardList() {}
@@ -115,7 +114,7 @@ ForwardList<T>::ForwardList(std::size_t n, Args&&... args) {
     NodeHeader* tail = &root;
 
     for (std::size_t i = 0; i < n; ++i) {
-        tail->next = new Node(nullptr, std::in_place, std::forward<Args>(args)...);
+        tail->next = new Node(nullptr, std::forward<Args>(args)...);
         tail = tail->next;
     }
 }
@@ -126,7 +125,7 @@ ForwardList<T>::ForwardList(It begin, Sn end) {
     NodeHeader* tail = &root;
 
     while (begin != end) {
-        tail->next = new Node(nullptr, std::in_place, *begin);
+        tail->next = new Node(nullptr, *begin);
         tail = tail->next;
         ++begin;
     }
@@ -147,9 +146,11 @@ auto ForwardList<T>::operator=(const ForwardList& other) -> ForwardList<T>& {
 
     while (their_tail->next != nullptr) {
         if (tail->next != nullptr) {
-            static_cast<Node*>(tail->next)->data = static_cast<Node*>(their_tail->next)->data;
+            static_cast<Node*>(tail->next)->data =
+                static_cast<Node*>(their_tail->next)->data;
         } else {
-            tail->next = new Node(nullptr, std::in_place, static_cast<Node*>(their_tail->next)->data);
+            tail->next = new Node(nullptr, std::in_place,
+                                  static_cast<Node*>(their_tail->next)->data);
         }
 
         tail = tail->next;
@@ -302,7 +303,7 @@ auto ForwardList<T>::clear() -> void {
 template <typename T>
 template <typename... Args>
 auto ForwardList<T>::emplace_after(iterator it, Args&&... args) -> void {
-    NodeHeader* new_node = new Node(it.node->next, std::in_place, std::forward<Args>(args)...);
+    NodeHeader* new_node = new Node(it.node->next, std::forward<Args>(args)...);
     it.node->next = new_node;
 }
 template <typename T>
