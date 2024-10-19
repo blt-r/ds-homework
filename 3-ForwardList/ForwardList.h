@@ -198,7 +198,7 @@ auto ForwardList<T>::iterator::operator++() -> iterator& {
     return *this;
 }
 
-// postfix
+// Postfix
 template <typename T>
 auto ForwardList<T>::iterator::operator++(int) -> iterator {
     auto old = *this;
@@ -231,7 +231,7 @@ auto ForwardList<T>::const_iterator::operator++() -> const_iterator& {
     node = node->next;
     return *this;
 }
-// postfix
+// Postfix
 template <typename T>
 auto ForwardList<T>::const_iterator::operator++(int) -> const_iterator {
     auto old = *this;
