@@ -149,8 +149,8 @@ auto ForwardList<T>::operator=(const ForwardList& other) -> ForwardList<T>& {
             static_cast<Node*>(tail->next)->data =
                 static_cast<Node*>(their_tail->next)->data;
         } else {
-            tail->next = new Node(nullptr, std::in_place,
-                                  static_cast<Node*>(their_tail->next)->data);
+            tail->next =
+                new Node(nullptr, static_cast<Node*>(their_tail->next)->data);
         }
 
         tail = tail->next;
