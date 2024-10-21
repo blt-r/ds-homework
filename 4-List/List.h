@@ -25,6 +25,7 @@ class List {
         T data;
 
         template <typename... Args>
+            requires requires(Args... args) { T(std::forward<Args>(args)...); }
         Node(NodeHeader* prev, NodeHeader* next, Args&&... args);
     };
 
@@ -33,10 +34,11 @@ class List {
    public:
     List();
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     explicit List(std::size_t n, Args&&... args);
 
     template <std::input_iterator It, std::sentinel_for<It> Sn>
-        requires std::is_same<T, std::iter_value_t<It>>::value
+        requires std::constructible_from<std::iter_value_t<It>, T>
     List(It begin, Sn end);
     List(std::initializer_list<T> list);
 
@@ -152,6 +154,7 @@ class List {
     auto size() -> std::size_t;
 
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     auto emplace(const_iterator it, Args&&... args) -> void;
     auto insert(const_iterator it, const T& item) -> void;
     auto push_front(const T& item) -> void;
@@ -177,6 +180,7 @@ List<T>::NodeHeader::NodeHeader(NodeHeader* prev, NodeHeader* next)
 
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 List<T>::Node::Node(NodeHeader* prev, NodeHeader* next, Args&&... args)
     : NodeHeader(prev, next), data(std::forward<Args>(args)...) {}
 
@@ -185,6 +189,7 @@ List<T>::List() : nullnode(&nullnode, &nullnode) {}  // emptty list
 
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 List<T>::List(std::size_t n, Args&&... args) : List() {
     for (std::size_t i = 0; i < n; ++i) {
         emplace(end(), std::forward<Args>(args)...);
@@ -193,7 +198,7 @@ List<T>::List(std::size_t n, Args&&... args) : List() {
 
 template <typename T>
 template <std::input_iterator It, std::sentinel_for<It> Sn>
-    requires std::is_same<T, std::iter_value_t<It>>::value
+    requires std::constructible_from<std::iter_value_t<It>, T>
 List<T>::List(It begin, Sn end) : List() {
     while (begin != end) {
         push_back(*begin);
@@ -275,6 +280,7 @@ auto List<T>::operator==(const List& other) const -> bool {
 
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 auto List<T>::emplace(const_iterator it, Args&&... args) -> void {
     Node* new_node =
         new Node(it.node->prev, it.node, std::forward<Args>(args)...);

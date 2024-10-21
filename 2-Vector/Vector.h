@@ -22,6 +22,7 @@ class Vector {
    public:
     Vector();
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     explicit Vector(sz_t n, const Args&... args);
     Vector(std::initializer_list<T> list);
 
@@ -37,6 +38,7 @@ class Vector {
     auto push_back(const T& value) -> void;
     auto push_back(T&& value) -> void;
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     auto emplace_back(Args&&... args) -> void;
     auto pop_back() -> void;
     auto clear() -> void;
@@ -108,6 +110,7 @@ auto Vector<T, A>::push_back(T&& value) -> void {
 
 template <typename T, typename A>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 auto Vector<T, A>::emplace_back(Args&&... args) -> void {
     if (len == cap) {
         resize(cap ? cap * 2 : 8);
@@ -190,6 +193,7 @@ Vector<T, A>::Vector() : ptr(nullptr), len(0), cap(0), alloc() {}
 
 template <typename T, typename A>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 Vector<T, A>::Vector(sz_t n, const Args&... args) : len(n), cap(n), alloc() {
     ptr = AllocT::allocate(alloc, cap);
     for (T* p = ptr; p < ptr + len; ++p) {

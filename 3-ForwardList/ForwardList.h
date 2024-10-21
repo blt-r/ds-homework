@@ -13,6 +13,7 @@ class ForwardList {
     struct Node : NodeHeader {
         T data;
         template <typename... Args>
+            requires requires(Args... args) { T(std::forward<Args>(args)...); }
         Node(NodeHeader* next, Args&&... args);
     };
 
@@ -21,11 +22,12 @@ class ForwardList {
    public:
     ForwardList();
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     explicit ForwardList(std::size_t n, Args&&... args);
     ForwardList(std::size_t n, const T& value);
 
     template <std::input_iterator It, std::sentinel_for<It> Sn>
-        requires std::is_same<T, std::iter_value_t<It>>::value
+        requires std::constructible_from<std::iter_value_t<It>, T>
     ForwardList(It begin, Sn end);
     ForwardList(std::initializer_list<T> list);
 
@@ -85,10 +87,12 @@ class ForwardList {
     auto empty() -> bool;
     auto clear() -> void;
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     auto emplace_after(iterator it, Args&&... args) -> void;
     auto insert_after(iterator it, const T& value) -> void;
     auto insert_after(iterator it, T&& value) -> void;
     template <typename... Args>
+        requires requires(Args... args) { T(std::forward<Args>(args)...); }
     auto emplace_front(Args&&... args) -> void;
     auto push_front(const T& value) -> void;
     auto push_front(T&& value) -> void;
@@ -102,6 +106,7 @@ ForwardList<T>::NodeHeader::NodeHeader(NodeHeader* next) : next(next) {}
 
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 ForwardList<T>::Node::Node(NodeHeader* next, Args&&... args)
     : NodeHeader(next), data(std::forward<Args>(args)...) {}
 
@@ -110,6 +115,7 @@ ForwardList<T>::ForwardList() {}
 
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 ForwardList<T>::ForwardList(std::size_t n, Args&&... args) {
     NodeHeader* tail = &root;
 
@@ -120,7 +126,7 @@ ForwardList<T>::ForwardList(std::size_t n, Args&&... args) {
 }
 template <typename T>
 template <std::input_iterator It, std::sentinel_for<It> Sn>
-    requires std::is_same<T, std::iter_value_t<It>>::value
+    requires std::constructible_from<std::iter_value_t<It>, T>
 ForwardList<T>::ForwardList(It begin, Sn end) {
     NodeHeader* tail = &root;
 
@@ -302,6 +308,7 @@ auto ForwardList<T>::clear() -> void {
 }
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 auto ForwardList<T>::emplace_after(iterator it, Args&&... args) -> void {
     NodeHeader* new_node = new Node(it.node->next, std::forward<Args>(args)...);
     it.node->next = new_node;
@@ -316,6 +323,7 @@ auto ForwardList<T>::insert_after(iterator it, T&& value) -> void {
 }
 template <typename T>
 template <typename... Args>
+    requires requires(Args... args) { T(std::forward<Args>(args)...); }
 auto ForwardList<T>::emplace_front(Args&&... args) -> void {
     emplace_after(before_begin(), std::forward<Args>(args)...);
 }

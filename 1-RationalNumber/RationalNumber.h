@@ -40,7 +40,10 @@ class RationalNumber {
     auto operator<=>(const RationalNumber& other) const;
     bool operator==(const RationalNumber& other) const;
 
-    template <typename U>
+    template <std::constructible_from<T> U>
+        requires requires(U a, U b) {
+            { a / b } -> std::same_as<U>;
+        }
     explicit operator U();
 };
 
@@ -179,7 +182,10 @@ template <typename T>
 bool RationalNumber<T>::operator==(const RationalNumber& other) const = default;
 
 template <typename T>
-template <typename U>
+template <std::constructible_from<T> U>
+    requires requires(U a, U b) {
+        { a / b } -> std::same_as<U>;
+    }
 RationalNumber<T>::operator U() {
     return U(top) / U(bottom);
 }
