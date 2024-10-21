@@ -14,7 +14,7 @@ class RationalNumber {
     void zero_bottom_check() const;
     void zero_top_check();
     void negative_bottom_check();
-    void cancelation();
+    void reduce();
 
    public:
     T get_top() const;
@@ -75,7 +75,7 @@ void RationalNumber<T>::negative_bottom_check() {
 }
 
 template <typename T>
-void RationalNumber<T>::cancelation() {
+void RationalNumber<T>::reduce() {
     auto gcd = std::gcd(top, bottom);
     top /= gcd;
     bottom /= gcd;
@@ -94,7 +94,7 @@ RationalNumber<T>::RationalNumber(const T& top_, const T& bottom_)
     zero_bottom_check();
     negative_bottom_check();
     zero_top_check();
-    cancelation();
+    reduce();
 }
 
 template <typename T>
@@ -118,7 +118,7 @@ RationalNumber<T>& RationalNumber<T>::operator+=(const RationalNumber& other) {
     top = top1 + top2;
     bottom = bottom / gcd * other.bottom;
 
-    cancelation();
+    reduce();
     zero_top_check();
 
     return *this;
@@ -139,7 +139,7 @@ RationalNumber<T>& RationalNumber<T>::operator*=(const RationalNumber& other) {
 
     zero_top_check();
     negative_bottom_check();
-    cancelation();
+    reduce();
 
     return *this;
 }
