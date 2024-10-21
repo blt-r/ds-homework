@@ -1,6 +1,6 @@
 
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -std=c++20 -fsanitize=address -O2 -g
+CXXFLAGS = -Wall -Wextra -std=c++20 -fsanitize=address,undefined,leak -O2 -g
 
 # use make as a command runner not a build system
 .PHONY: build run format clean
