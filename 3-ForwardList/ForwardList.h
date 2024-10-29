@@ -43,7 +43,8 @@ class ForwardList {
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        iterator(NodeHeader* node = nullptr);
+        explicit iterator(NodeHeader* node);
+        iterator();  // this iterator will be invalid
         auto operator==(const iterator& other) const -> bool;
         auto operator++() -> iterator&;    // Prefix
         auto operator++(int) -> iterator;  // Postfix
@@ -61,7 +62,8 @@ class ForwardList {
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        const_iterator(NodeHeader* node = nullptr);
+        explicit const_iterator(NodeHeader* node);
+        const_iterator();  // this iterator will be invalid
         const_iterator(const iterator& non_const);
         auto operator==(const const_iterator& other) const -> bool;
         auto operator++() -> const_iterator&;    // Prefix
@@ -194,6 +196,9 @@ template <typename T>
 ForwardList<T>::iterator::iterator(NodeHeader* node) : node(node) {}
 
 template <typename T>
+ForwardList<T>::iterator::iterator() : node(nullptr) {}
+
+template <typename T>
 auto ForwardList<T>::iterator::operator==(const iterator& other) const
     -> bool = default;
 
@@ -222,6 +227,9 @@ auto ForwardList<T>::iterator::operator->() const -> T* {
 
 template <typename T>
 ForwardList<T>::const_iterator::const_iterator(NodeHeader* node) : node(node) {}
+
+template <typename T>
+ForwardList<T>::const_iterator::const_iterator() : node(nullptr) {}
 
 template <typename T>
 ForwardList<T>::const_iterator::const_iterator(const iterator& non_const)
