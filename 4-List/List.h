@@ -1,4 +1,6 @@
 #pragma once
+#include <compare>
+#include <concepts>
 #include <cstddef>
 #include <initializer_list>
 #include <iostream>
@@ -54,7 +56,7 @@ class List {
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        iterator(NodeHeader* node);
+        explicit iterator(NodeHeader* node);
         iterator();  // this iterator will be invalid
         auto operator==(const iterator& other) const -> bool;
         auto operator++() -> iterator&;    // Prefix
@@ -75,7 +77,7 @@ class List {
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        const_iterator(NodeHeader* node);
+        explicit const_iterator(NodeHeader* node);
         const_iterator();  // this iterator will be invalid
         const_iterator(iterator it);
         auto operator==(const const_iterator& other) const -> bool;
@@ -103,7 +105,7 @@ class List {
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        reverse_iterator(NodeHeader* node);
+        explicit reverse_iterator(NodeHeader* node);
         reverse_iterator();  // this iterator will be invalid
         auto operator==(const reverse_iterator& other) const -> bool;
         auto operator++() -> reverse_iterator&;    // Prefix
@@ -124,7 +126,7 @@ class List {
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        const_reverse_iterator(NodeHeader* node);
+        explicit const_reverse_iterator(NodeHeader* node);
         const_reverse_iterator();  // this iterator will be invalid
         const_reverse_iterator(reverse_iterator it);
         auto operator==(const const_reverse_iterator& other) const -> bool;
@@ -167,11 +169,14 @@ class List {
 
     // Merges two sorted lists
     auto merge(const List& other) -> void;
-    // Implements in-place insertion sort algorithm
+    auto pop_and_insert(iterator pop_from, iterator insert_to) -> iterator;
+
+    auto insertion_sort() -> void
+        requires std::three_way_comparable<T>;
+    auto quick_sort() -> void  // always faster
+        requires std::swappable<T> && std::three_way_comparable<T>;
+
     auto sort() -> void;
-    // Returns iterator to node that previously was after `pop_from`
-    auto pop_and_insert(const_iterator pop_from,
-                        const_iterator insert_to) -> const_iterator;
 };
 
 template <typename T>
@@ -352,8 +357,8 @@ auto List<T>::merge(const List& other) -> void {
 }
 
 template <typename T>
-auto List<T>::pop_and_insert(const_iterator pop_from,
-                             const_iterator insert_to) -> const_iterator {
+auto List<T>::pop_and_insert(iterator pop_from, iterator insert_to)
+    -> iterator {
     auto after_poped = pop_from.node->next;
 
     pop_from.node->prev->next = pop_from.node->next;
@@ -365,16 +370,18 @@ auto List<T>::pop_and_insert(const_iterator pop_from,
     insert_to.node->prev->next = pop_from.node;
     insert_to.node->prev = pop_from.node;
 
-    return const_iterator(after_poped);
+    return iterator(after_poped);
 }
 
 template <typename T>
-auto List<T>::sort() -> void {
+auto List<T>::insertion_sort() -> void
+    requires std::three_way_comparable<T>
+{
     if (empty()) {
         return;
     }
 
-    const_iterator pivot = std::next(begin());
+    auto pivot = std::next(begin());
 
     while (pivot != end()) {
         auto current = pivot;
@@ -391,6 +398,53 @@ auto List<T>::sort() -> void {
     }
 }
 
+template <std::forward_iterator It>
+    requires std::swappable<std::iter_value_t<It>> &&
+             std::three_way_comparable<std::iter_value_t<It>>
+auto partition(It from, It to) -> It {
+    if (from == to || std::next(from) == to) {
+        return from;
+    }
+
+    auto pivot = from;
+    auto wall = from;
+
+    for (auto it = std::next(from); it != to; ++it) {
+        if (*it < *pivot) {
+            ++wall;
+            std::swap(*it, *wall);
+        }
+    }
+
+    std::swap(*pivot, *wall);
+
+    return wall;
+}
+
+template <std::forward_iterator It>
+    requires std::swappable<std::iter_value_t<It>> &&
+             std::three_way_comparable<std::iter_value_t<It>>
+auto quick_sort_rec(It from, It to) -> void {
+    if (from == to || std::next(from) == to) {
+        return;
+    }
+    auto pivot = partition(from, to);
+
+    quick_sort_rec(from, pivot);
+    quick_sort_rec(std::next(pivot), to);
+}
+
+template <typename T>
+auto List<T>::quick_sort() -> void
+    requires std::swappable<T> && std::three_way_comparable<T>
+{
+    quick_sort_rec(begin(), end());
+}
+
+template <typename T>
+auto List<T>::sort() -> void {
+    quick_sort();
+}
 // ## List::iterator
 template <typename T>
 List<T>::iterator::iterator(NodeHeader* node) : node(node) {}
