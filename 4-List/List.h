@@ -33,7 +33,7 @@ class List {
 
     NodeHeader nullnode;
 
-   public:
+  public:
     List();
     template <typename... Args>
         requires requires(Args... args) { T(std::forward<Args>(args)...); }
@@ -52,7 +52,7 @@ class List {
         friend class List;
         NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
@@ -73,7 +73,7 @@ class List {
         friend class List;
         NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
@@ -101,7 +101,7 @@ class List {
         friend class List;
         NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
@@ -122,7 +122,7 @@ class List {
         friend class List;
         NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 

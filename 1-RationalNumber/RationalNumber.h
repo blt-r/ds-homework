@@ -16,7 +16,7 @@ class RationalNumber {
     void negative_bottom_check();
     void reduce();
 
-   public:
+  public:
     T get_top() const;
     T get_bottom() const;
 

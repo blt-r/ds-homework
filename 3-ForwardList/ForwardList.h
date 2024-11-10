@@ -19,7 +19,7 @@ class ForwardList {
 
     NodeHeader root = NodeHeader(nullptr);
 
-   public:
+  public:
     ForwardList();
     template <typename... Args>
         requires requires(Args... args) { T(std::forward<Args>(args)...); }
@@ -39,7 +39,7 @@ class ForwardList {
         friend class ForwardList<T>;  // good oop
         NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
@@ -58,7 +58,7 @@ class ForwardList {
     class const_iterator {
         const NodeHeader* node;
 
-       public:
+      public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 

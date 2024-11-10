@@ -4,13 +4,13 @@
 
 template <typename T, typename A = std::allocator<T>>
 class Vector {
-   private:
+  private:
     using AllocT = std::allocator_traits<A>;
 
-   public:
+  public:
     using sz_t = AllocT::size_type;
 
-   private:
+  private:
     T* ptr;
     sz_t len;
     sz_t cap;
@@ -19,7 +19,7 @@ class Vector {
 
     auto resize(sz_t new_cap) -> void;
 
-   public:
+  public:
     Vector();
     template <typename... Args>
         requires requires(Args... args) { T(std::forward<Args>(args)...); }
