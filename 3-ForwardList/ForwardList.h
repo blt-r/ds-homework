@@ -24,7 +24,6 @@ class ForwardList {
     template <typename... Args>
         requires requires(Args... args) { T(std::forward<Args>(args)...); }
     explicit ForwardList(std::size_t n, Args&&... args);
-    ForwardList(std::size_t n, const T& value);
 
     template <std::input_iterator It, std::sentinel_for<It> Sn>
         requires std::constructible_from<std::iter_value_t<It>, T>
@@ -39,12 +38,13 @@ class ForwardList {
         friend class ForwardList<T>;  // good oop
         NodeHeader* node;
 
+        iterator();  // this iterator will be invalid
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
         explicit iterator(NodeHeader* node);
-        iterator();  // this iterator will be invalid
         auto operator==(const iterator& other) const -> bool;
         auto operator++() -> iterator&;    // Prefix
         auto operator++(int) -> iterator;  // Postfix
@@ -58,11 +58,12 @@ class ForwardList {
     class const_iterator {
         const NodeHeader* node;
 
+        explicit const_iterator(NodeHeader* node);
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        explicit const_iterator(NodeHeader* node);
         const_iterator();  // this iterator will be invalid
         const_iterator(const iterator& non_const);
         auto operator==(const const_iterator& other) const -> bool;

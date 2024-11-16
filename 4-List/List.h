@@ -52,11 +52,12 @@ class List {
         friend class List;
         NodeHeader* node;
 
+        explicit iterator(NodeHeader* node);
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        explicit iterator(NodeHeader* node);
         iterator();  // this iterator will be invalid
         auto operator==(const iterator& other) const -> bool;
         auto operator++() -> iterator&;    // Prefix
@@ -73,11 +74,12 @@ class List {
         friend class List;
         NodeHeader* node;
 
+        explicit const_iterator(NodeHeader* node);
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        explicit const_iterator(NodeHeader* node);
         const_iterator();  // this iterator will be invalid
         const_iterator(iterator it);
         auto operator==(const const_iterator& other) const -> bool;
@@ -101,11 +103,12 @@ class List {
         friend class List;
         NodeHeader* node;
 
+        explicit reverse_iterator(NodeHeader* node);
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        explicit reverse_iterator(NodeHeader* node);
         reverse_iterator();  // this iterator will be invalid
         auto operator==(const reverse_iterator& other) const -> bool;
         auto operator++() -> reverse_iterator&;    // Prefix
@@ -122,11 +125,12 @@ class List {
         friend class List;
         NodeHeader* node;
 
+        explicit const_reverse_iterator(NodeHeader* node);
+
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = const T;
 
-        explicit const_reverse_iterator(NodeHeader* node);
         const_reverse_iterator();  // this iterator will be invalid
         const_reverse_iterator(reverse_iterator it);
         auto operator==(const const_reverse_iterator& other) const -> bool;
