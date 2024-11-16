@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 #include "../Set.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 #include <set>
 

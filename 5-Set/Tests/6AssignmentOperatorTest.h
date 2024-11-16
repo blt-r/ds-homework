@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include "../Set.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct AssignmentOperatorTest {

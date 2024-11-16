@@ -1,6 +1,6 @@
 #pragma once
 #include "../ForwardList.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct InitializerListConstructorTest {

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Set.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct BasicConstructorsTest {

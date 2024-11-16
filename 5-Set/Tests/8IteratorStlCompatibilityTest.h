@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <vector>
 #include "../Set.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct IteratorStlCompatibilityTest {

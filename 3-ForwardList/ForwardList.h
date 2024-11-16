@@ -35,16 +35,16 @@ class ForwardList {
     ~ForwardList();
 
     class iterator {
-        friend class ForwardList<T>;  // good oop
+        friend class ForwardList<T>;
         NodeHeader* node;
 
-        iterator();  // this iterator will be invalid
+        explicit iterator(NodeHeader* node);
 
       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
 
-        explicit iterator(NodeHeader* node);
+        iterator();  // this iterator will be invalid
         auto operator==(const iterator& other) const -> bool;
         auto operator++() -> iterator&;    // Prefix
         auto operator++(int) -> iterator;  // Postfix
@@ -56,6 +56,7 @@ class ForwardList {
     static_assert(std::output_iterator<iterator, T>);
 
     class const_iterator {
+        friend class ForwardList<T>;
         const NodeHeader* node;
 
         explicit const_iterator(NodeHeader* node);

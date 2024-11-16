@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "../List.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct IteratorConstructibleTest {

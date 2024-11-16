@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "../RationalNumber.h"
-#include "Fixtures/CustomAsserts.h"
+#include "CustomAsserts.h"
 
 namespace test {
 struct Test0 {
