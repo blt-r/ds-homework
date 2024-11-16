@@ -19,3 +19,6 @@ test('forward-list', forward_list)
 list = executable('list-tests', '4-List/main.cpp')
 test('list', list)
 
+set = executable('set-tests', '5-Set/main.cpp', '5-Set/Set.cpp')
+test('set', set)
+
