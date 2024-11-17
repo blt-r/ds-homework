@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -11,77 +10,69 @@ void assertEqual(const T1& value,
                  const T2& expectedValue,
                  int line,
                  char const* file) {
-    if (value != expectedValue) {
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        std::cerr << "The expected value was " << expectedValue << ", but got "
-                  << value << " instead.\n\n";
-        std::cerr << "Line: " << line << "\n";
-        std::cerr << "File: " << file << "\n";
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        assert(false);
+    if (value == expectedValue) {
+        return;
     }
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::cerr << file << ':' << line << ": Assertion failed:\n";
+    std::cerr << "The expected value was " << expectedValue << ", but got "
+              << value << " instead.\n";
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::exit(1);
 }
 
 template <typename T1, typename T2>
-void assertFloatEqual(const T1& value,
-                      const T2& expectedValue,
+void assertFloatEqual(const T1& actual,
+                      const T2& expected,
                       int line,
                       char const* file) {
     static constexpr auto c_precision = 0.00001;
-    if (std::abs(value - expectedValue) > c_precision) {
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        std::cerr << "The expected value was " << expectedValue << ", but got "
-                  << value << " instead.\n\n";
-        std::cerr << "Line: " << line << "\n";
-        std::cerr << "File: " << file << "\n";
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        assert(false);
+    if (std::abs(actual - expected) < c_precision) {
+        return;
     }
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::cerr << file << ':' << line << ": Assertion failed:\n";
+    std::cerr << "The expected value was " << expected << ", but got " << actual
+              << " instead.\n";
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::exit(1);
 }
 
 template <typename T1, typename T2>
-void assertGreater(const T1& value,
-                   const T2& expectedValue,
+void assertGreater(const T1& actual,
+                   const T2& expected,
                    int line,
                    char const* file) {
-    if (value <= expectedValue) {
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        std::cerr << "The value was expected to be greater than "
-                  << expectedValue << ", but was " << value << " instead.\n\n";
-        std::cerr << "Line:" << line << "\n";
-        std::cerr << "File: " << file << "\n";
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        assert(false);
+    if (actual > expected) {
+        return;
     }
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::cerr << file << ':' << line << ": Assertion failed:\n";
+    std::cerr << "The value was expected to be greater than " << expected
+              << ", but was " << actual << " instead.\n";
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::exit(1);
 }
 
 template <typename T1, typename T2>
-void assertLess(const T1& value,
-                const T2& expectedValue,
+void assertLess(const T1& actual,
+                const T2& expected,
                 int line,
                 char const* file) {
-    if (value >= expectedValue) {
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        std::cerr << "The value was expected to be less than " << expectedValue
-                  << ", but was " << value << " instead.\n\n";
-        std::cerr << "Line:" << line << "\n";
-        std::cerr << "File: " << file << "\n";
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        assert(false);
+    if (actual < expected) {
+        return;
     }
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::cerr << file << ':' << line << ": Assertion failed:\n";
+    std::cerr << "The value was expected to be less than " << expected
+              << ", but was " << actual << " instead.\n";
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::exit(1);
 }
 
 template <typename T>
 void assertLexicallyEqual(const T& actual,
-                          const std::string& expected,
+                          const std::string_view& expected,
                           int line,
                           char const* file) {
     std::stringstream ss;
@@ -90,17 +81,15 @@ void assertLexicallyEqual(const T& actual,
 }
 
 void assertBool(bool condition, int line, char const* file) {
-    if (!condition) {
-        std::cerr
-            << "\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        std::cerr << "The condition was expected to be true, but was false "
-                     "instead.\n\n";
-        std::cerr << "Line: " << line << "\n";
-        std::cerr << "File: " << file << "\n";
-        std::cerr
-            << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
-        assert(false);
+    if (condition) {
+        return;
     }
+    std::cerr << "\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::cerr << file << ':' << line << ": Assertion failed:\n";
+    std::cerr << "The condition was expected to be true, but was false "
+                 "instead.\n";
+    std::cerr << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    std::exit(1);
 }
 
 }  // namespace test
