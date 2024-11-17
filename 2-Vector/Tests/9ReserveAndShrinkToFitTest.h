@@ -8,20 +8,20 @@ struct ReserveAndShrinkToFitTest {
         Vector<int> vec;
 
         assertBool(vec.empty(), __LINE__, __FILE__);
-        assertEqual(vec.size(), std::size_t(0), __LINE__, __FILE__);
+        assertEqual(vec.size(), 0u, __LINE__, __FILE__);
 
         vec.reserve(100);
-        assertEqual(vec.capacity(), std::size_t(100), __LINE__, __FILE__);
+        assertEqual(vec.capacity(), 100u, __LINE__, __FILE__);
         assertBool(vec.empty(), __LINE__, __FILE__);
 
         vec.shrink_to_fit();
-        assertEqual(vec.capacity(), std::size_t(0), __LINE__, __FILE__);
+        assertEqual(vec.capacity(), 0u, __LINE__, __FILE__);
 
         vec = {1, 2, 3};
         vec.reserve(100);
-        assertEqual(vec.capacity(), std::size_t(100), __LINE__, __FILE__);
+        assertEqual(vec.capacity(), 100u, __LINE__, __FILE__);
         vec.shrink_to_fit();
-        assertEqual(vec.capacity(), std::size_t(3), __LINE__, __FILE__);
+        assertEqual(vec.capacity(), 3u, __LINE__, __FILE__);
     }
 };
 

@@ -20,7 +20,7 @@ struct ClassWithoutDefaultConstructorTest {
         vec2.push_back(test::TestClassWithoutDefaultConstructor(7, 3.14, 'k'));
         vec2.reserve(100);
 
-        test::assertEqual(vec2.size(), std::size_t(2), __LINE__, __FILE__);
+        test::assertEqual(vec2.size(), 2u, __LINE__, __FILE__);
     }
 };
 

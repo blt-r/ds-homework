@@ -9,9 +9,9 @@ struct BasicConstructorsTest {
         Vector<double> vec2(10);
         Vector<char> vec3(30, 'x');
 
-        assertEqual(vec1.size(), std::size_t(0), __LINE__, __FILE__);
-        assertEqual(vec2.size(), std::size_t(10), __LINE__, __FILE__);
-        assertEqual(vec3.size(), std::size_t(30), __LINE__, __FILE__);
+        assertEqual(vec1.size(), 0u, __LINE__, __FILE__);
+        assertEqual(vec2.size(), 10u, __LINE__, __FILE__);
+        assertEqual(vec3.size(), 30u, __LINE__, __FILE__);
     }
 };
 

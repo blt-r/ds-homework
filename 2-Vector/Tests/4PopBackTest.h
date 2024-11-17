@@ -8,7 +8,7 @@ struct PopBackTest {
         Vector<int> vec{1, 2, 3};
         vec.pop_back();
 
-        assertEqual(vec.size(), std::size_t(2), __LINE__, __FILE__);
+        assertEqual(vec.size(), 2u, __LINE__, __FILE__);
         assertEqual(vec[0], 1, __LINE__, __FILE__);
         assertEqual(vec[1], 2, __LINE__, __FILE__);
     }

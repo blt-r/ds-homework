@@ -32,7 +32,7 @@ struct EmplaceFrontTest {
             ++count;
         }
 
-        assertEqual(count, std::size_t(3), __LINE__, __FILE__);
+        assertEqual(count, 3u, __LINE__, __FILE__);
     }
 };
 

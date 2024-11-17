@@ -18,9 +18,9 @@ struct InsertContainsTest {
         assertBool(set1.contains(5), __LINE__, __FILE__);
         assertBool(set1.contains(6), __LINE__, __FILE__);
         assertBool(set1.contains(20), __LINE__, __FILE__);
-        assertEqual(set1.size(), size_t(4), __LINE__, __FILE__);
+        assertEqual(set1.size(), 4u, __LINE__, __FILE__);
         set1.insert(20);
-        assertEqual(set1.size(), size_t(4), __LINE__, __FILE__);
+        assertEqual(set1.size(), 4u, __LINE__, __FILE__);
 
         assertBool(!set1.contains(7), __LINE__, __FILE__);
 

@@ -34,7 +34,7 @@ struct DestructorCallTest {
             for (std::size_t i = 0; i < vec.size(); ++i)
                 vec[i] = destructorTestClassObj;
         }
-        assertEqual(destructorCallCounter, std::size_t(30), __LINE__, __FILE__);
+        assertEqual(destructorCallCounter, 30u, __LINE__, __FILE__);
 
         destructorCallCounter = 0;
 
@@ -44,10 +44,8 @@ struct DestructorCallTest {
             for (std::size_t i = 0; i < 100; ++i)
                 vec.push_back(destructorTestClassObj);
         }
-        assertGreater(destructorCallCounter, std::size_t(100), __LINE__,
-                      __FILE__);
-        assertLess(destructorCallCounter, std::size_t(1000), __LINE__,
-                   __FILE__);
+        assertGreater(destructorCallCounter, 100u, __LINE__, __FILE__);
+        assertLess(destructorCallCounter, 1000u, __LINE__, __FILE__);
     }
 };
 

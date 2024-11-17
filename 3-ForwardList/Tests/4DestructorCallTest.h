@@ -31,7 +31,7 @@ struct DestructorCallTest {
             for (std::size_t i = 0; i < 20; ++i)
                 lst.push_front(destructorTestClassObj);
         }
-        assertEqual(destructorCallCounter, std::size_t(30), __LINE__, __FILE__);
+        assertEqual(destructorCallCounter, 30u, __LINE__, __FILE__);
 
         destructorCallCounter = 0;
         {
@@ -40,10 +40,9 @@ struct DestructorCallTest {
             for (std::size_t i = 0; i < 5; ++i)
                 lst.pop_front();
 
-            assertEqual(destructorCallCounter, std::size_t(5), __LINE__,
-                        __FILE__);
+            assertEqual(destructorCallCounter, 5u, __LINE__, __FILE__);
         }
-        assertEqual(destructorCallCounter, std::size_t(10), __LINE__, __FILE__);
+        assertEqual(destructorCallCounter, 10u, __LINE__, __FILE__);
     }
 };
 

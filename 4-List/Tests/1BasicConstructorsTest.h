@@ -20,7 +20,7 @@ struct BasicConstructorsTest {
         assertBool(!lst3.empty(), __LINE__, __FILE__);
         assertEqual(lst3.front(), 'x', __LINE__, __FILE__);
         assertEqual(lst3.back(), 'x', __LINE__, __FILE__);
-        assertEqual(lst3.size(), std::size_t(30), __LINE__, __FILE__);
+        assertEqual(lst3.size(), 30u, __LINE__, __FILE__);
     }
 };
 

@@ -26,7 +26,7 @@ struct EmplaceBackTest {
         vec1.emplace_back();
         vec1.emplace_back('s', 10);
 
-        assertEqual(vec1.size(), std::size_t(3), __LINE__, __FILE__);
+        assertEqual(vec1.size(), 3u, __LINE__, __FILE__);
     }
 };
 

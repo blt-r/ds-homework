@@ -7,7 +7,7 @@ struct BasicConstructorsTest {
     BasicConstructorsTest() {
         Set set;
         assertBool(set.empty(), __LINE__, __FILE__);
-        assertEqual(set.size(), size_t(0), __LINE__, __FILE__);
+        assertEqual(set.size(), 0u, __LINE__, __FILE__);
     }
 };
 

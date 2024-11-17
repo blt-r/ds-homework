@@ -10,11 +10,11 @@ struct SwapTest {
 
         vec1.swap(vec2);
 
-        assertEqual(vec1.size(), std::size_t(2), __LINE__, __FILE__);
+        assertEqual(vec1.size(), 2u, __LINE__, __FILE__);
         assertEqual(vec1[0], 4, __LINE__, __FILE__);
         assertEqual(vec1[1], 5, __LINE__, __FILE__);
 
-        assertEqual(vec2.size(), std::size_t(3), __LINE__, __FILE__);
+        assertEqual(vec2.size(), 3u, __LINE__, __FILE__);
         assertEqual(vec2[0], 1, __LINE__, __FILE__);
         assertEqual(vec2[1], 2, __LINE__, __FILE__);
         assertEqual(vec2[2], 3, __LINE__, __FILE__);

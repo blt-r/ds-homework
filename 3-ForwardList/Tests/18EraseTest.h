@@ -42,7 +42,7 @@ struct EraseTest {
         ForwardList<TestClassForErase> erase_list(10);
         ++destructorCounter;
         erase_list.erase_after(erase_list.begin());
-        assertEqual(destructorCounter, std::size_t(2), __LINE__, __FILE__);
+        assertEqual(destructorCounter, 2u, __LINE__, __FILE__);
     }
 };
 

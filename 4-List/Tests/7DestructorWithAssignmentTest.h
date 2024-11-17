@@ -21,8 +21,7 @@ struct DestructorWithAssignmentTest {
 
         lst2 = lst1;
 
-        assertGreater(destructorCallCounter, std::size_t(19), __LINE__,
-                      __FILE__);
+        assertGreater(destructorCallCounter, 19u, __LINE__, __FILE__);
     }
 };
 

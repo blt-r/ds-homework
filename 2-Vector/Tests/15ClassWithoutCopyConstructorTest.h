@@ -26,7 +26,7 @@ struct ClassWithoutCopyConstructorTest {
         for (std::size_t i = 0; i < 100; ++i)
             vec3.emplace_back(i, 20.3, 'x');
 
-        test::assertEqual(vec3.size(), std::size_t(100), __LINE__, __FILE__);
+        test::assertEqual(vec3.size(), 100u, __LINE__, __FILE__);
     }
 };
 
