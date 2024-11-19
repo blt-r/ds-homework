@@ -25,11 +25,11 @@ class Set {
 
     auto insert(int value) -> void;
     auto erase(int value) -> void;
-    auto erase(iterator it) -> void;
+    auto erase(iterator it) -> iterator;
     auto contains(int value) -> bool;
-    auto find(int value) -> iterator;
-    auto upper_bound(int value) -> iterator;
-    auto lower_bound(int value) -> iterator;
+    auto find(int value) const -> iterator;
+    auto upper_bound(int value) const -> iterator;
+    auto lower_bound(int value) const -> iterator;
 
     auto dump_graphviz(std::ostream& os) -> void;
 
@@ -38,14 +38,9 @@ class Set {
     Node* root;
     size_t element_count;
 
-    static auto rec_copy(Node* from, Node*& to) -> void;
+    static auto rec_copy(Node* from, Node* to_parent, Node*& to) -> void;
     static auto rec_destroy(Node* node) -> void;
-    static auto rec_build_iterator(Node* node, int value, iterator& it) -> void;
-    static auto rec_build_iterator_upper(Node* node, int value, iterator& it)
-        -> void;
-    static auto rec_build_iterator_lower(Node* node, int value, iterator& it)
-        -> void;
-    auto rec_insert(Node*& node, int value) -> void;
+    auto rec_insert(Node* parent, Node*& node, int value) -> void;
     auto rec_yank(Node*& node, int value) -> Node*;
 
     static auto right_rotate(Node*& x) -> void;
@@ -68,9 +63,9 @@ class Set::iterator {
 
   private:
     friend class Set;
-    iterator(Node* root);
-    auto move_left(Node* node) -> void;
 
-    std::vector<Node*> stack;
+    Node* node;
+
+    iterator(Node* node);
 };
 static_assert(std::forward_iterator<Set::iterator>);

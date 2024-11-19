@@ -5,6 +5,7 @@
 #include "Set.h"
 
 struct Set::Node {
+    Node* parent = nullptr;
     Node* left = nullptr;
     Node* right = nullptr;
     size_t level;
@@ -23,31 +24,33 @@ struct Set::Node {
         ssize_t rh = right ? right->level : 0;
         return lh - rh;
     }
-    static auto min_in_subtree(Node*& node) -> Node*& {
-        return node->left ? min_in_subtree(node->left) : node;
+
+    auto min_in_subtree() -> Node* {
+        return left ? left->min_in_subtree() : this;
     }
 };
 
 Set::Set() : root(nullptr), element_count(0) {}
 
-auto Set::rec_copy(Node* from, Node*& to) -> void {
+auto Set::rec_copy(Node* from, Node* to_parent, Node*& to) -> void {
     if (from == nullptr) {
         return;
     }
 
     to = new Node(from->value, from->level);
+    to->parent = to_parent;
 
-    rec_copy(from->left, to->left);
-    rec_copy(from->right, to->right);
+    rec_copy(from->left, to, to->left);
+    rec_copy(from->right, to, to->right);
 }
 
 Set::Set(const Set& other) : root(nullptr), element_count(other.element_count) {
-    rec_copy(other.root, root);
+    rec_copy(other.root, nullptr, root);
 }
 
 auto Set::operator=(const Set& other) -> Set& {
     rec_destroy(root);
-    rec_copy(other.root, root);
+    rec_copy(other.root, nullptr, root);
 
     element_count = other.element_count;
 
@@ -99,7 +102,13 @@ auto Set::left_rotate(Node*& x) -> void {
     Node* T2 = y->left;
 
     y->left = x;
+    y->parent = x->parent;
     x->right = T2;
+    x->parent = y;
+
+    if (T2 != nullptr) {
+        T2->parent = x;
+    }
 
     x->level = x->compute_level();
     y->level = y->compute_level();
@@ -118,8 +127,14 @@ auto Set::right_rotate(Node*& x) -> void {
     Node* y = x->left;
     Node* T2 = y->right;
 
-    x->left = T2;
     y->right = x;
+    y->parent = x->parent;
+    x->left = T2;
+    x->parent = y;
+
+    if (T2 != nullptr) {
+        T2->parent = x;
+    }
 
     x->level = x->compute_level();
     y->level = y->compute_level();
@@ -127,9 +142,10 @@ auto Set::right_rotate(Node*& x) -> void {
     x = y;
 }
 
-auto Set::rec_insert(Node*& node, int value) -> void {
+auto Set::rec_insert(Node* parent, Node*& node, int value) -> void {
     if (node == nullptr) {
         node = new Node(value, 1);
+        node->parent = parent;
         element_count++;
         return;
     }
@@ -137,9 +153,9 @@ auto Set::rec_insert(Node*& node, int value) -> void {
     if (value == node->value) {
         return;
     } else if (value < node->value) {
-        rec_insert(node->left, value);
+        rec_insert(node, node->left, value);
     } else {
-        rec_insert(node->right, value);
+        rec_insert(node, node->right, value);
     }
 
     node->level = node->compute_level();
@@ -170,7 +186,7 @@ auto Set::rec_insert(Node*& node, int value) -> void {
 }
 
 auto Set::insert(int value) -> void {
-    rec_insert(root, value);
+    rec_insert(nullptr, root, value);
 }
 
 auto Set::rec_yank(Node*& node, int value) -> Node* {
@@ -185,21 +201,35 @@ auto Set::rec_yank(Node*& node, int value) -> Node* {
     } else if (value > node->value) {
         yanked = rec_yank(node->right, value);
     } else if (node->left == nullptr) {
+        if (node->right) {
+            node->right->parent = node->parent;
+        }
         yanked = node;
         node = node->right;
     } else if (node->right == nullptr) {
+        if (node->left) {
+            node->left->parent = node->parent;
+        }
         yanked = node;
         node = node->left;
     } else {
         yanked = node;
 
-        Node* successor = Node::min_in_subtree(node->right);
+        Node* successor = node->right->min_in_subtree();
 
         // this will return the successor
         rec_yank(node->right, successor->value);
 
+        // right might have been the successor, not exist anymore
+        if (node->right != nullptr) {
+            node->right->parent = successor;
+        }
+        node->left->parent = successor;
+
         successor->left = node->left;
         successor->right = node->right;
+        successor->parent = node->parent;
+
         node = successor;
     }
 
@@ -245,8 +275,10 @@ auto Set::erase(int value) -> void {
     }
 }
 
-auto Set::erase(iterator it) -> void {
-    erase(*it);
+auto Set::erase(iterator it) -> iterator {
+    iterator next = std::next(it);
+    erase(*it);  // erase doesn't invalidate any iterators
+    return next;
 }
 
 auto Set::contains(int value) -> bool {
@@ -265,65 +297,56 @@ auto Set::contains(int value) -> bool {
     return false;
 }
 
-auto Set::rec_build_iterator(Node* node, int value, iterator& it) -> void {
-    if (!node) {
-        return;
+auto Set::find(int value) const -> iterator {
+    Node* current = root;
+
+    while (current) {
+        if (value == current->value) {
+            return iterator(current);
+        } else if (value < current->value) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
     }
 
-    if (value == node->value) {
-        it.stack.push_back(node);
-    } else if (value < node->value) {
-        it.stack.push_back(node);
-        rec_build_iterator(node->left, value, it);
-    } else {
-        rec_build_iterator(node->right, value, it);
-    }
+    return iterator();
 }
 
-auto Set::find(int value) -> iterator {
-    iterator it;
-    rec_build_iterator(root, value, it);
-    return it;
-}
+auto Set::upper_bound(int value) const -> iterator {
+    Node* current = root;
 
-auto Set::rec_build_iterator_upper(Node* node, int value, iterator& it)
-    -> void {
-    if (!node) {
-        return;
+    while (current) {
+        if (current->value > value) {
+            if (current->left == nullptr || current->left->value < value) {
+                return iterator(current);
+            }
+            current = current->left;
+        } else {
+            current = current->right;
+        }
     }
 
-    if (value >= node->value) {
-        rec_build_iterator_upper(node->right, value, it);
-    } else {
-        it.stack.push_back(node);
-        rec_build_iterator_upper(node->left, value, it);
-    }
+    return iterator();
 }
 
-auto Set::upper_bound(int value) -> iterator {
-    iterator it;
-    rec_build_iterator_upper(root, value, it);
-    return it;
-}
+auto Set::lower_bound(int value) const -> iterator {
+    Node* current = root;
 
-auto Set::rec_build_iterator_lower(Node* node, int value, iterator& it)
-    -> void {
-    if (!node) {
-        return;
+    while (current) {
+        if (current->value == value) {
+            return iterator(current);
+        } else if (current->value > value) {
+            if (current->left == nullptr || current->left->value < value) {
+                return iterator(current);
+            }
+            current = current->left;
+        } else {
+            current = current->right;
+        }
     }
 
-    if (value > node->value) {
-        rec_build_iterator_lower(node->right, value, it);
-    } else {
-        it.stack.push_back(node);
-        rec_build_iterator_lower(node->left, value, it);
-    }
-}
-
-auto Set::lower_bound(int value) -> iterator {
-    iterator it;
-    rec_build_iterator_lower(root, value, it);
-    return it;
+    return iterator();
 }
 
 auto Set::rec_dump_graphviz(Node* node, std::ostream& os) -> void {
@@ -331,8 +354,11 @@ auto Set::rec_dump_graphviz(Node* node, std::ostream& os) -> void {
         return;
     }
 
-    os << std::format("  {} [label=\"{}\\nlevel={}\"]\n", node->value,
-                      node->value, node->level);
+    auto parent =
+        node->parent ? std::format("{}", node->parent->value) : "(null)";
+
+    os << std::format("  {} [label=\"{}\\nlevel={}\\nparent={}\"]\n",
+                      node->value, node->value, node->level, parent);
 
     if (node->left != nullptr) {
         os << std::format("  {} -> {} [label=left]\n", node->value,
@@ -353,44 +379,40 @@ auto Set::dump_graphviz(std::ostream& os) -> void {
 }
 
 auto Set::begin() const -> iterator {
-    return iterator(root);
+    if (root != nullptr) {
+        return iterator(root->min_in_subtree());
+    } else {
+        return iterator();
+    }
 }
 
 auto Set::end() const -> iterator {
     return iterator();
 }
 
-Set::iterator::iterator() {}
+Set::iterator::iterator() : node(nullptr) {}
+Set::iterator::iterator(Node* node) : node(node) {}
 
-Set::iterator::iterator(Node* root) {
-    move_left(root);
-}
-
-auto Set::iterator::move_left(Node* node) -> void {
-    while (node != nullptr) {
-        stack.push_back(node);
-        node = node->left;
-    }
-}
-
-auto Set::iterator::operator==(const iterator& other) const -> bool {
-    if (stack.empty() && other.stack.empty()) {
-        return true;
-    }
-
-    if (stack.empty() != other.stack.empty()) {
-        return false;
-    }
-
-    return stack.back() == other.stack.back();
-}
+auto Set::iterator::operator==(const iterator& other) const -> bool = default;
 
 auto Set::iterator::operator++() -> iterator& {  // Prefix
-    Node* current = stack.back();
-    stack.pop_back();
+    if (node->right != nullptr) {
+        node = node->right->min_in_subtree();
+        return *this;
+    }
 
-    if (current->right) {
-        move_left(current->right);
+    while (node->parent != nullptr && node->parent->right == node) {
+        node = node->parent;
+    }
+
+    if (node->parent == nullptr) {
+        node = nullptr;
+        return *this;
+    }
+
+    if (node->parent->left == node) {
+        node = node->parent;
+        return *this;
     }
 
     return *this;
@@ -403,9 +425,9 @@ auto Set::iterator::operator++(int) -> iterator {  // Postfix
 }
 
 auto Set::iterator::operator*() const -> const int& {
-    return stack.back()->value;
+    return node->value;
 }
 
 auto Set::iterator::operator->() const -> const int* {
-    return &stack.back()->value;
+    return &node->value;
 }
