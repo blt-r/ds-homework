@@ -432,3 +432,21 @@ auto Set::iterator::operator*() const -> const int& {
 auto Set::iterator::operator->() const -> const int* {
     return &node->value;
 }
+
+auto operator<<(std::ostream& os, const Set& set) -> std::ostream& {
+    auto begin = set.begin();
+    auto end = set.end();
+
+    os << '{';
+    if (begin != end) {
+        os << *begin;
+        ++begin;
+    }
+
+    while (begin != end) {
+        os << ", " << *begin;
+        ++begin;
+    }
+    os << '}';
+    return os;
+}

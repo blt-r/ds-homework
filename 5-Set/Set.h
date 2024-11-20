@@ -69,3 +69,5 @@ class Set::iterator {
     iterator(Node* node);
 };
 static_assert(std::forward_iterator<Set::iterator>);
+
+auto operator<<(std::ostream& os, const Set& set) -> std::ostream&;
