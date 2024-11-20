@@ -354,11 +354,12 @@ auto Set::rec_dump_graphviz(Node* node, std::ostream& os) -> void {
         return;
     }
 
-    auto parent =
-        node->parent ? std::format("{}", node->parent->value) : "(null)";
-
-    os << std::format("  {} [label=\"{}\\nlevel={}\\nparent={}\"]\n",
-                      node->value, node->value, node->level, parent);
+    os << (node->parent != nullptr)
+        ? std::format("  {} [label=\"{}\\nlevel={}\\nparent={}\"]\n",
+                      node->value, node->value, node->level,
+                      node->parent->value)
+        : std::format("  {} [label=\"{}\\nlevel={}\\nparent=(null)\"]\n",
+                      node->value, node->value, node->level);
 
     if (node->left != nullptr) {
         os << std::format("  {} -> {} [label=left]\n", node->value,
