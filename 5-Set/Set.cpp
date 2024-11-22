@@ -13,13 +13,13 @@ struct Set::Node {
 
     Node(int value, size_t level) : level(level), value(value) {}
 
-    auto compute_level() -> size_t {
+    auto compute_level() const -> size_t {
         size_t lh = left ? left->level : 0;
         size_t rh = right ? right->level : 0;
         return 1 + std::max(lh, rh);
     }
 
-    auto balance() -> ssize_t {
+    auto balance() const -> ssize_t {
         ssize_t lh = left ? left->level : 0;
         ssize_t rh = right ? right->level : 0;
         return lh - rh;
@@ -49,6 +49,10 @@ Set::Set(const Set& other) : root(nullptr), element_count(other.element_count) {
 }
 
 auto Set::operator=(const Set& other) -> Set& {
+    if (&other == this) {
+        return *this;
+    }
+
     rec_destroy(root);
     rec_copy(other.root, nullptr, root);
 
@@ -354,12 +358,14 @@ auto Set::rec_dump_graphviz(Node* node, std::ostream& os) -> void {
         return;
     }
 
-    os << (node->parent != nullptr)
-        ? std::format("  {} [label=\"{}\\nlevel={}\\nparent={}\"]\n",
-                      node->value, node->value, node->level,
-                      node->parent->value)
-        : std::format("  {} [label=\"{}\\nlevel={}\\nparent=(null)\"]\n",
-                      node->value, node->value, node->level);
+    if (node->parent != nullptr) {
+        os << std::format("  {} [label=\"{}\\nlevel={}\\nparent={}\"]\n",
+                          node->value, node->value, node->level,
+                          node->parent->value);
+    } else {
+        os << std::format("  {} [label=\"{}\\nlevel={}\\nparent=(null)\"]\n",
+                          node->value, node->value, node->level);
+    }
 
     if (node->left != nullptr) {
         os << std::format("  {} -> {} [label=left]\n", node->value,

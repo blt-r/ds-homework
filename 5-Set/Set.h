@@ -41,7 +41,7 @@ class Set {
     static auto rec_copy(Node* from, Node* to_parent, Node*& to) -> void;
     static auto rec_destroy(Node* node) -> void;
     auto rec_insert(Node* parent, Node*& node, int value) -> void;
-    auto rec_yank(Node*& node, int value) -> Node*;
+    static auto rec_yank(Node*& node, int value) -> Node*;
 
     static auto right_rotate(Node*& x) -> void;
     static auto left_rotate(Node*& x) -> void;
