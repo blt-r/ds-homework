@@ -2,8 +2,6 @@
 
 #include <cstddef>
 #include <ostream>
-#include <stack>
-#include <vector>
 
 class Set {
   public:
@@ -23,7 +21,7 @@ class Set {
     auto size() const -> size_t;
     auto empty() const -> bool;
 
-    auto insert(int value) -> void;
+    auto insert(int value) -> std::pair<iterator, bool>;
     auto erase(int value) -> void;
     auto erase(iterator it) -> iterator;
     auto contains(int value) -> bool;
@@ -40,7 +38,8 @@ class Set {
 
     static auto rec_copy(Node* from, Node* to_parent, Node*& to) -> void;
     static auto rec_destroy(Node* node) -> void;
-    auto rec_insert(Node* parent, Node*& node, int value) -> void;
+    static auto rec_insert(Node* parent, Node*& node, int value)
+        -> std::pair<Node*, bool>;
     static auto rec_yank(Node*& node, int value) -> Node*;
 
     static auto right_rotate(Node*& x) -> void;
@@ -66,7 +65,7 @@ class Set::iterator {
 
     Node* node;
 
-    iterator(Node* node);
+    explicit iterator(Node* node);
 };
 static_assert(std::forward_iterator<Set::iterator>);
 

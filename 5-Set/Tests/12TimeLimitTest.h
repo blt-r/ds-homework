@@ -1,7 +1,6 @@
 #pragma once
 #include <algorithm>
 #include <chrono>
-#include <thread>
 #include <vector>
 #include "../Set.h"
 #include "CustomAsserts.h"

@@ -146,20 +146,26 @@ auto Set::right_rotate(Node*& x) -> void {
     x = y;
 }
 
-auto Set::rec_insert(Node* parent, Node*& node, int value) -> void {
+auto Set::rec_insert(Node* parent, Node*& node, int value)
+    -> std::pair<Node*, bool> {
     if (node == nullptr) {
         node = new Node(value, 1);
         node->parent = parent;
-        element_count++;
-        return;
+        return {node, true};
     }
 
+    std::pair<Node*, bool> inserted;
+
     if (value == node->value) {
-        return;
+        inserted = {node, false};
     } else if (value < node->value) {
-        rec_insert(node, node->left, value);
+        inserted = rec_insert(node, node->left, value);
     } else {
-        rec_insert(node, node->right, value);
+        inserted = rec_insert(node, node->right, value);
+    }
+
+    if (!inserted.second) {
+        return inserted;
     }
 
     node->level = node->compute_level();
@@ -187,10 +193,18 @@ auto Set::rec_insert(Node* parent, Node*& node, int value) -> void {
         right_rotate(node->right);
         left_rotate(node);
     }
+
+    return inserted;
 }
 
-auto Set::insert(int value) -> void {
-    rec_insert(nullptr, root, value);
+auto Set::insert(int value) -> std::pair<iterator, bool> {
+    auto [node, did_insert] = rec_insert(nullptr, root, value);
+
+    if (did_insert) {
+        element_count++;
+    }
+
+    return {iterator(node), did_insert};
 }
 
 auto Set::rec_yank(Node*& node, int value) -> Node* {
