@@ -22,7 +22,7 @@ class Set {
     auto empty() const -> bool;
 
     auto insert(int value) -> std::pair<iterator, bool>;
-    auto erase(int value) -> void;
+    auto erase(int value) -> size_t;
     auto erase(iterator it) -> iterator;
     auto contains(int value) -> bool;
     auto find(int value) const -> iterator;

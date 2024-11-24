@@ -284,13 +284,15 @@ auto Set::rec_yank(Node*& node, int value) -> Node* {
     return yanked;
 }
 
-auto Set::erase(int value) -> void {
+auto Set::erase(int value) -> size_t {
     Node* yanked = rec_yank(root, value);
 
     if (yanked != nullptr) {
         delete yanked;
         element_count--;
     }
+
+    return yanked == nullptr ? 0 : 1;
 }
 
 auto Set::erase(iterator it) -> iterator {
