@@ -41,3 +41,10 @@ set = executable(
   include_directories: inc,
 )
 test('set', set)
+
+heap = executable(
+  'heap-tests',
+  '6-Heap/main.cpp',
+  include_directories: inc,
+)
+test('heap', heap)
