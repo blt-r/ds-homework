@@ -6,7 +6,6 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
-#include <optional>
 #include <utility>
 
 // List's representation is actually circular,
@@ -222,7 +221,7 @@ template <typename T>
 List<T>::List(const List& other) : List(other.begin(), other.end()) {}
 
 template <typename T>
-List<T>& List<T>::operator=(const List& other) {
+auto List<T>::operator=(const List& other) -> List<T>& {
     if (&other == this) {
         return *this;
     }
@@ -284,7 +283,7 @@ auto List<T>::size() -> std::size_t {
 
 template <typename T>
 auto List<T>::operator==(const List& other) const -> bool {
-    return std::equal(begin(), end(), other.begin(), other.end());
+    return std::ranges::equal(*this, other);
 }
 
 template <typename T>
@@ -325,7 +324,7 @@ template <typename T>
 auto List<T>::erase(iterator it) -> iterator {
     it.node->prev->next = it.node->next;
     it.node->next->prev = it.node->prev;
-    iterator new_it = iterator(it.node->next);
+    auto new_it = iterator(it.node->next);
     delete static_cast<Node*>(it.node);
     return new_it;
 }

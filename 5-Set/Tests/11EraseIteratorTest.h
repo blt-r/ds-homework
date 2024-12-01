@@ -14,7 +14,7 @@ struct EraseIteratorTest {
         for (std::size_t i = 0; i < values.size(); ++i) {
             std::vector<int> sorted_values(values.begin(),
                                            values.begin() + i + 1);
-            std::sort(sorted_values.begin(), sorted_values.end());
+            std::ranges::sort(sorted_values);
 
             set.insert(values[i]);
             assertEqual(set.size(), sorted_values.size(), __LINE__, __FILE__);
@@ -32,7 +32,7 @@ struct EraseIteratorTest {
             assertEqual(set.size(), values.size(), __LINE__, __FILE__);
 
             auto sorted_values = values;
-            std::sort(sorted_values.begin(), sorted_values.end());
+            std::ranges::sort(sorted_values);
 
             std::size_t k = 0;
             for (int value : set)

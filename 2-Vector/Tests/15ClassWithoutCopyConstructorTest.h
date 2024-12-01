@@ -16,7 +16,7 @@ struct TestClassWithoutCopyConstructor {
         const TestClassWithoutCopyConstructor& other) = delete;
 
     TestClassWithoutCopyConstructor(
-        const TestClassWithoutCopyConstructor&& other)
+        const TestClassWithoutCopyConstructor&& other) noexcept
         : val1(other.val1), val2(other.val2), val3(other.val3) {}
 };
 

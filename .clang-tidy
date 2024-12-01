@@ -1,0 +1,7 @@
+Checks: \
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  modernize-*,
+  performance-*,
+  -modernize-use-nodiscard,
+  -modernize-return-braced-init-list,

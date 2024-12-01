@@ -22,6 +22,6 @@
 #include "Tests/18EraseTest.h"
 #include "Tests/19StlCompatibilityTest.h"
 
-int main() {
+auto main() -> int {
     std::cout << "All tests have passed :3\n";
 }

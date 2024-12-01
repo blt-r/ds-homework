@@ -10,7 +10,7 @@ struct TestClassWithOneField {
 
     TestClassWithOneField(const TestClassWithOneField& other) = delete;
 
-    TestClassWithOneField(const TestClassWithOneField&& other)
+    TestClassWithOneField(const TestClassWithOneField&& other) noexcept
         : val(other.val) {}
 };
 

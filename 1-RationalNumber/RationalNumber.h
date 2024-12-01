@@ -11,34 +11,32 @@ class RationalNumber {
     T top;
     T bottom;
 
-    void zero_bottom_check() const;
-    void zero_top_check();
-    void negative_bottom_check();
-    void reduce();
+    auto zero_bottom_check() const -> void;
+    auto zero_top_check() -> void;
+    auto negative_bottom_check() -> void;
+    auto reduce() -> void;
 
   public:
-    T get_top() const;
-    T get_bottom() const;
+    auto get_top() const -> T;
+    auto get_bottom() const -> T;
 
     RationalNumber();
     RationalNumber(const T& top_);
     RationalNumber(const T& top_, const T& bottom_);
 
-    RationalNumber operator+() const;
-    RationalNumber operator-() const;
+    auto operator+() const -> RationalNumber;
+    auto operator-() const -> RationalNumber;
 
-    RationalNumber& operator+=(const RationalNumber& other);
-    RationalNumber& operator-=(const RationalNumber& other);
-    RationalNumber& operator*=(const RationalNumber& other);
-    RationalNumber& operator/=(const RationalNumber& other);
+    auto operator+=(const RationalNumber& other) -> RationalNumber&;
+    auto operator-=(const RationalNumber& other) -> RationalNumber&;
+    auto operator*=(const RationalNumber& other) -> RationalNumber&;
+    auto operator/=(const RationalNumber& other) -> RationalNumber&;
 
-    // Prefix
-    RationalNumber& operator++();
-    // Postfix
-    RationalNumber operator++(int);
+    auto operator++() -> RationalNumber&;    // Prefix
+    auto operator++(int) -> RationalNumber;  // Postfix
 
     auto operator<=>(const RationalNumber& other) const;
-    bool operator==(const RationalNumber& other) const;
+    auto operator==(const RationalNumber& other) const -> bool;
 
     template <std::constructible_from<T> U>
         requires requires(U a, U b) {
@@ -48,29 +46,29 @@ class RationalNumber {
 };
 
 template <typename T>
-T RationalNumber<T>::get_top() const {
+auto RationalNumber<T>::get_top() const -> T {
     return top;
 }
 
 template <typename T>
-T RationalNumber<T>::get_bottom() const {
+auto RationalNumber<T>::get_bottom() const -> T {
     return bottom;
 }
 
 template <typename T>
-void RationalNumber<T>::zero_bottom_check() const {
+auto RationalNumber<T>::zero_bottom_check() const -> void {
     if (bottom == 0) {
         throw std::invalid_argument("bottom of a fraction cannot be 0");
     }
 }
 template <typename T>
-void RationalNumber<T>::zero_top_check() {
+auto RationalNumber<T>::zero_top_check() -> void {
     if (top == 0) {
         bottom = 1;
     }
 }
 template <typename T>
-void RationalNumber<T>::negative_bottom_check() {
+auto RationalNumber<T>::negative_bottom_check() -> void {
     if (bottom < 0) {
         top = -top;
         bottom = -bottom;
@@ -78,7 +76,7 @@ void RationalNumber<T>::negative_bottom_check() {
 }
 
 template <typename T>
-void RationalNumber<T>::reduce() {
+auto RationalNumber<T>::reduce() -> void {
     auto gcd = std::gcd(top, bottom);
     top /= gcd;
     bottom /= gcd;
@@ -88,11 +86,11 @@ template <typename T>
 RationalNumber<T>::RationalNumber() : top(0), bottom(1) {}
 
 template <typename T>
-RationalNumber<T>::RationalNumber(const T& top_) : top(top_), bottom(1) {}
+RationalNumber<T>::RationalNumber(const T& top) : top(top), bottom(1) {}
 
 template <typename T>
-RationalNumber<T>::RationalNumber(const T& top_, const T& bottom_)
-    : top(top_), bottom(bottom_) {
+RationalNumber<T>::RationalNumber(const T& top, const T& bottom)
+    : top(top), bottom(bottom) {
     // Invariants:
     zero_bottom_check();
     negative_bottom_check();
@@ -101,11 +99,11 @@ RationalNumber<T>::RationalNumber(const T& top_, const T& bottom_)
 }
 
 template <typename T>
-RationalNumber<T> RationalNumber<T>::operator+() const {
+auto RationalNumber<T>::operator+() const -> RationalNumber<T> {
     return *this;
 }
 template <typename T>
-RationalNumber<T> RationalNumber<T>::operator-() const {
+auto RationalNumber<T>::operator-() const -> RationalNumber<T> {
     RationalNumber r;
     r.top = -top;
     r.bottom = bottom;
@@ -113,7 +111,8 @@ RationalNumber<T> RationalNumber<T>::operator-() const {
 }
 
 template <typename T>
-RationalNumber<T>& RationalNumber<T>::operator+=(const RationalNumber& other) {
+auto RationalNumber<T>::operator+=(const RationalNumber& other)
+    -> RationalNumber<T>& {
     auto gcd = std::gcd(bottom, other.bottom);
     auto top1 = top * (other.bottom / gcd);
     auto top2 = other.top * (bottom / gcd);
@@ -128,13 +127,15 @@ RationalNumber<T>& RationalNumber<T>::operator+=(const RationalNumber& other) {
 }
 
 template <typename T>
-RationalNumber<T>& RationalNumber<T>::operator-=(const RationalNumber& other) {
+auto RationalNumber<T>::operator-=(const RationalNumber& other)
+    -> RationalNumber<T>& {
     *this += (-other);
     return *this;
 }
 
 template <typename T>
-RationalNumber<T>& RationalNumber<T>::operator*=(const RationalNumber& other) {
+auto RationalNumber<T>::operator*=(const RationalNumber& other)
+    -> RationalNumber<T>& {
     auto gcd1 = std::gcd(top, other.bottom);
     auto gcd2 = std::gcd(bottom, other.top);
     top = (top / gcd1) * (other.top / gcd2);
@@ -148,7 +149,8 @@ RationalNumber<T>& RationalNumber<T>::operator*=(const RationalNumber& other) {
 }
 
 template <typename T>
-RationalNumber<T>& RationalNumber<T>::operator/=(const RationalNumber& other) {
+auto RationalNumber<T>::operator/=(const RationalNumber& other)
+    -> RationalNumber<T>& {
     RationalNumber<T> reciprocal;
     reciprocal.top = other.bottom;
     reciprocal.bottom = other.top;
@@ -162,13 +164,13 @@ RationalNumber<T>& RationalNumber<T>::operator/=(const RationalNumber& other) {
 
 // Prefix
 template <typename T>
-RationalNumber<T>& RationalNumber<T>::operator++() {
+auto RationalNumber<T>::operator++() -> RationalNumber<T>& {
     top += bottom;
     return *this;
 }
 // Postfix
 template <typename T>
-RationalNumber<T> RationalNumber<T>::operator++(int) {
+auto RationalNumber<T>::operator++(int) -> RationalNumber<T> {
     auto old = *this;
     top += bottom;
     return old;
@@ -179,7 +181,8 @@ auto RationalNumber<T>::operator<=>(const RationalNumber& other) const {
     return top * other.bottom <=> other.top * bottom;
 }
 template <typename T>
-bool RationalNumber<T>::operator==(const RationalNumber& other) const = default;
+auto RationalNumber<T>::operator==(const RationalNumber& other) const
+    -> bool = default;
 
 template <typename T>
 template <std::constructible_from<T> U>
@@ -191,62 +194,67 @@ RationalNumber<T>::operator U() {
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const RationalNumber<T>& self) {
+auto operator<<(std::ostream& os, const RationalNumber<T>& self)
+    -> std::ostream& {
     os << self.get_top() << '/' << self.get_bottom();
     return os;
 }
 
 template <typename T>
-RationalNumber<T> operator+(const RationalNumber<T>& lhs,
-                            const RationalNumber<T>& rhs) {
+auto operator+(const RationalNumber<T>& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     auto result = lhs;
     result += rhs;
     return result;
 }
 
 template <typename T>
-RationalNumber<T> operator-(const RationalNumber<T>& lhs,
-                            const RationalNumber<T>& rhs) {
+auto operator-(const RationalNumber<T>& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     auto result = lhs;
     result -= rhs;
     return result;
 }
 
 template <typename T>
-RationalNumber<T> operator*(const RationalNumber<T>& lhs,
-                            const RationalNumber<T>& rhs) {
+auto operator*(const RationalNumber<T>& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     auto result = lhs;
     result *= rhs;
     return result;
 }
 
 template <typename T>
-RationalNumber<T> operator/(const RationalNumber<T>& lhs,
-                            const RationalNumber<T>& rhs) {
+auto operator/(const RationalNumber<T>& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     auto result = lhs;
     result /= rhs;
     return result;
 }
 
 template <typename T>
-RationalNumber<T> operator+(const T& lhs, const RationalNumber<T>& rhs) {
+auto operator+(const T& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     return RationalNumber(lhs) + rhs;
 }
 template <typename T>
-RationalNumber<T> operator-(const T& lhs, const RationalNumber<T>& rhs) {
+auto operator-(const T& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     return RationalNumber(lhs) - rhs;
 }
 template <typename T>
-RationalNumber<T> operator*(const T& lhs, const RationalNumber<T>& rhs) {
+auto operator*(const T& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     return RationalNumber(lhs) * rhs;
 }
 template <typename T>
-RationalNumber<T> operator/(const T& lhs, const RationalNumber<T>& rhs) {
+auto operator/(const T& lhs, const RationalNumber<T>& rhs)
+    -> RationalNumber<T> {
     return RationalNumber(lhs) / rhs;
 }
 
 namespace literals {
-RationalNumber<unsigned long long> operator""_r(unsigned long long t) {
+auto operator""_r(unsigned long long t) -> RationalNumber<unsigned long long> {
     return RationalNumber(t);
 }
 }  // namespace literals

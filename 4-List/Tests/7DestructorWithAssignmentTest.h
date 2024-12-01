@@ -7,7 +7,7 @@ namespace test {
 static std::size_t destructorCallCounter = 0;
 
 struct TestClassForDestructorWothAssignment {
-    auto& operator=(const TestClassForDestructorWothAssignment& _) {
+    auto operator=(const TestClassForDestructorWothAssignment& _) -> auto& {
         this->~TestClassForDestructorWothAssignment();
         return *this;
     }

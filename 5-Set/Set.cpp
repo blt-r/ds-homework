@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstddef>
 #include <format>
 #include <iostream>
@@ -83,7 +84,7 @@ Set::Set(std::initializer_list<int> list) : Set() {
 }
 
 auto Set::operator==(const Set& other) const -> bool {
-    return std::equal(begin(), end(), other.begin(), other.end());
+    return std::ranges::equal(*this, other);
 }
 
 auto Set::size() const -> size_t {
@@ -448,6 +449,8 @@ auto Set::iterator::operator++(int) -> iterator {  // Postfix
 }
 
 auto Set::iterator::operator*() const -> const int& {
+    // supress clang-tidy warning about possible return of null reference
+    assert(node != nullptr);
     return node->value;
 }
 

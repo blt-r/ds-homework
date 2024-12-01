@@ -4,9 +4,9 @@
 
 namespace test {
 struct TestClassForFront {
-    std::string getVal() { return "getVal"; }
+    auto getVal() -> std::string { return "getVal"; }
 
-    std::string getVal() const { return "getVal const"; }
+    auto getVal() const -> std::string { return "getVal const"; }
 };
 
 struct FrontTest {

@@ -12,6 +12,6 @@
 #include "Tests/Test7.h"
 #include "Tests/Test8.h"
 
-int main() {
+auto main() -> int {
     std::cout << "All tests have passed :3\n";
 }

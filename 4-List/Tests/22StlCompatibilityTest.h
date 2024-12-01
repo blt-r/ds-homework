@@ -19,8 +19,7 @@ struct StlCompatibilityTest {
             assertEqual(value, 4, __LINE__, __FILE__);
         }
 
-        assertBool(std::all_of(lst2.begin(), lst2.end(),
-                               [](int val) { return val == 4; }),
+        assertBool(std::ranges::all_of(lst2, [](int val) { return val == 4; }),
                    __LINE__, __FILE__);
     }
 };

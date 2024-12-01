@@ -20,6 +20,6 @@
 #include "Tests/15ClassWithoutCopyConstructorTest.h"
 #include "Tests/16MoveConstructorAndMoveAssignmentOperatorTest.h"
 
-int main() {
+auto main() -> int {
     std::cout << "All tests have passed :3\n";
 }

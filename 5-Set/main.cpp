@@ -18,6 +18,6 @@
 
 #include <iostream>
 
-int main() {
+auto main() -> int {
     std::cout << "All tests have passed :3\n";
 }

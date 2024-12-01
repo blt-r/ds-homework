@@ -12,7 +12,7 @@ struct IteratorTest {
     IteratorTest() {
         Set set{5, 2, 3, 4, 1, 10, 20};
         std::vector<int> values{5, 2, 3, 4, 1, 10, 20};
-        std::sort(values.begin(), values.end());
+        std::ranges::sort(values);
 
         Set::iterator it = set.begin();
         assertEqual(*it, 1, __LINE__, __FILE__);
@@ -24,7 +24,7 @@ struct IteratorTest {
             assertEqual(*it, values[k++], __LINE__, __FILE__);
 
         it = set.begin();
-        assertBool(std::is_const<std::remove_reference_t<decltype(*it)>>::value,
+        assertBool(std::is_const_v<std::remove_reference_t<decltype(*it)>>,
                    __LINE__, __FILE__);  // This means that *iterator must be of
                                          // a type const int&
 

@@ -1,6 +1,5 @@
 #pragma once
 #include <algorithm>
-#include <optional>
 #include <ostream>
 #include <utility>
 
@@ -115,7 +114,7 @@ ForwardList<T>::Node::Node(NodeHeader* next, Args&&... args)
     : NodeHeader(next), data(std::forward<Args>(args)...) {}
 
 template <typename T>
-ForwardList<T>::ForwardList() {}
+ForwardList<T>::ForwardList() = default;
 
 template <typename T>
 template <typename... Args>
@@ -365,7 +364,7 @@ auto ForwardList<T>::pop_front() -> void {
 
 template <typename T>
 auto ForwardList<T>::operator==(const ForwardList& other) const -> bool {
-    return std::ranges::equal(begin(), end(), other.begin(), other.end());
+    return std::ranges::equal(*this, other);
 }
 
 template <typename T>

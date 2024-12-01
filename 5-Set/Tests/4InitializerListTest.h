@@ -17,28 +17,28 @@ struct InitializerListTest {
             set.insert(value);
 
         set.erase(29);
-        values.erase(std::find(values.begin(), values.end(), 29));
+        values.erase(std::ranges::find(values, 29));
 
         for (int value : values)
             assertBool(set.contains(value), __LINE__, __FILE__);
         assertEqual(set.size(), values.size(), __LINE__, __FILE__);
 
         set.erase(2);
-        values.erase(std::find(values.begin(), values.end(), 2));
+        values.erase(std::ranges::find(values, 2));
 
         for (int value : values)
             assertBool(set.contains(value), __LINE__, __FILE__);
         assertEqual(set.size(), values.size(), __LINE__, __FILE__);
 
         set.erase(20);
-        values.erase(std::find(values.begin(), values.end(), 20));
+        values.erase(std::ranges::find(values, 20));
 
         for (int value : values)
             assertBool(set.contains(value), __LINE__, __FILE__);
         assertEqual(set.size(), values.size(), __LINE__, __FILE__);
 
         set.erase(14);
-        values.erase(std::find(values.begin(), values.end(), 14));
+        values.erase(std::ranges::find(values, 14));
 
         for (int value : values)
             assertBool(set.contains(value), __LINE__, __FILE__);

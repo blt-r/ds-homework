@@ -1,4 +1,6 @@
 #pragma once
+
+#include <bit>
 #include <memory>
 #include <ostream>
 
@@ -17,6 +19,8 @@ class Vector {
     [[no_unique_address]]
     A alloc;
 
+    static constexpr sz_t INITIAL_CAPACITY = 8;
+
     auto resize(sz_t new_cap) -> void;
 
   public:
@@ -27,9 +31,9 @@ class Vector {
     Vector(std::initializer_list<T> list);
 
     Vector(const Vector& other);
-    Vector(Vector&& other);
+    Vector(Vector&& other) noexcept;
     auto operator=(const Vector& other) -> Vector&;
-    auto operator=(Vector&& other) -> Vector&;
+    auto operator=(Vector&& other) noexcept -> Vector&;
     ~Vector();
 
     auto data() const -> T*;
@@ -49,7 +53,7 @@ class Vector {
     auto front() const -> const T&;
     auto back() -> T&;
     auto back() const -> const T&;
-    auto swap(Vector& other) -> void;
+    auto swap(Vector& other) noexcept -> void;
     auto at(sz_t n) -> T&;
     auto at(sz_t n) const -> const T&;
 
@@ -79,7 +83,7 @@ auto Vector<T, A>::resize(sz_t new_cap) -> void {
 template <typename T, typename A>
 auto Vector<T, A>::data() const -> T* {
     // data() should never return null pointer
-    return ptr ? ptr : reinterpret_cast<T*>(alignof(T));
+    return ptr ? ptr : std::bit_cast<T*>(alignof(T));
 }
 template <typename T, typename A>
 auto Vector<T, A>::size() const -> sz_t {
@@ -92,7 +96,7 @@ auto Vector<T, A>::capacity() const -> sz_t {
 template <typename T, typename A>
 auto Vector<T, A>::push_back(const T& value) -> void {
     if (len == cap) {
-        resize(cap ? cap * 2 : 8);
+        resize(cap ? cap * 2 : INITIAL_CAPACITY);
     }
 
     AllocT::construct(alloc, &ptr[len], value);
@@ -101,7 +105,7 @@ auto Vector<T, A>::push_back(const T& value) -> void {
 template <typename T, typename A>
 auto Vector<T, A>::push_back(T&& value) -> void {
     if (len == cap) {
-        resize(cap ? cap * 2 : 8);
+        resize(cap ? cap * 2 : INITIAL_CAPACITY);
     }
 
     AllocT::construct(alloc, &ptr[len], std::move(value));
@@ -113,7 +117,7 @@ template <typename... Args>
     requires requires(Args... args) { T(std::forward<Args>(args)...); }
 auto Vector<T, A>::emplace_back(Args&&... args) -> void {
     if (len == cap) {
-        resize(cap ? cap * 2 : 8);
+        resize(cap ? cap * 2 : INITIAL_CAPACITY);
     }
 
     AllocT::construct(alloc, &ptr[len], std::forward<Args>(args)...);
@@ -163,7 +167,7 @@ auto Vector<T, A>::back() const -> const T& {
     return (*this)[len - 1];
 };
 template <typename T, typename A>
-auto Vector<T, A>::swap(Vector& other) -> void {
+auto Vector<T, A>::swap(Vector& other) noexcept -> void {
     std::swap(ptr, other.ptr);
     std::swap(len, other.len);
     std::swap(cap, other.cap);
@@ -226,7 +230,7 @@ Vector<T, A>::Vector(const Vector& other) {
     }
 }
 template <typename T, typename A>
-Vector<T, A>::Vector(Vector&& other) {
+Vector<T, A>::Vector(Vector&& other) noexcept {
     cap = other.cap;
     len = other.len;
     ptr = other.ptr;
@@ -254,7 +258,7 @@ auto Vector<T, A>::operator=(const Vector& other) -> Vector<T, A>& {
     return *this;
 }
 template <typename T, typename A>
-auto Vector<T, A>::operator=(Vector&& other) -> Vector<T, A>& {
+auto Vector<T, A>::operator=(Vector&& other) noexcept -> Vector<T, A>& {
     if (&other == this)
         return *this;
 
