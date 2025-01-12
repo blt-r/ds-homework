@@ -20,9 +20,9 @@ struct Set::Node {
         return 1 + std::max(lh, rh);
     }
 
-    auto balance() const -> ssize_t {
-        ssize_t lh = left ? left->level : 0;
-        ssize_t rh = right ? right->level : 0;
+    auto balance() const -> int {
+        int lh = left ? left->level : 0;
+        int rh = right ? right->level : 0;
         return lh - rh;
     }
 
@@ -171,7 +171,7 @@ auto Set::rec_insert(Node* parent, Node*& node, int value)
 
     node->level = node->compute_level();
 
-    ssize_t balance = node->balance();
+    int balance = node->balance();
 
     // left left case
     if (balance > 1 && value < node->left->value) {
@@ -258,7 +258,7 @@ auto Set::rec_yank(Node*& node, int value) -> Node* {
 
     node->level = node->compute_level();
 
-    ssize_t balance = node->balance();
+    int balance = node->balance();
 
     // left left case
     if (balance > 1 && node->left->balance() >= 0) {
